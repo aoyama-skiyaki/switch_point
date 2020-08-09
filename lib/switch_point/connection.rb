@@ -8,6 +8,7 @@ module SwitchPoint
     # See ActiveRecord::ConnectionAdapters::QueryCache
     DESTRUCTIVE_METHODS = %i[insert update delete].freeze
 
+    # 破壊的メソッド（insert, update, delete）を上書き
     DESTRUCTIVE_METHODS.each do |method_name|
       define_method(method_name) do |*args, &block|
         if pool.equal?(ActiveRecord::Base.connection_pool)
@@ -25,9 +26,11 @@ module SwitchPoint
       if switch_points
         switch_points.each do |switch_point|
           proxy = ProxyRepository.find(switch_point[:name])
+          # writableなDBにつなぎに行っているかのチェック
           if switch_point[:mode] != :writable
             raise Error.new("ActiveRecord::Base's switch_points must be writable, but #{switch_point[:name]} is #{switch_point[:mode]}")
           end
+          # クエリキャッシュをクリアしてからメソッドを実行
           purge_readonly_query_cache(proxy)
         end
       end
@@ -39,6 +42,7 @@ module SwitchPoint
         proxy = ProxyRepository.find(switch_point[:name])
         case switch_point[:mode]
         when :readonly
+          # auto_writable: trueの場合、readonlyでも書き込む
           if SwitchPoint.config.auto_writable?
             proxy_to_writable(proxy, method_name, *args, &block)
           else

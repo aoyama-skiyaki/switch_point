@@ -48,11 +48,14 @@ module SwitchPoint
       end
 
       def switch_point_proxy
+        # @switch_point_nameが "instance-variable" として定義されているか
         if defined?(@switch_point_name)
+          # Proxyに追加
           ProxyRepository.checkout(@switch_point_name)
         elsif self == ActiveRecord::Base
           nil
         else
+          # 再帰処理
           superclass.switch_point_proxy
         end
       end
@@ -69,6 +72,7 @@ module SwitchPoint
 
       private
 
+      # configで接続先のDBを記載しているかチェック
       def assert_existing_switch_point!(name)
         SwitchPoint.config.fetch(name)
       end

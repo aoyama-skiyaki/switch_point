@@ -87,10 +87,12 @@ module SwitchPoint
       mode == :writable
     end
 
+    # readonlyに切り替え
     def with_readonly(&block)
       with_mode(:readonly, &block)
     end
 
+    # writableに切り替え
     def with_writable(&block)
       with_mode(:writable, &block)
     end
