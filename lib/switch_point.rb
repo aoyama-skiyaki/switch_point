@@ -21,6 +21,7 @@ module SwitchPoint
     end
 
     def readonly!(name)
+      # ProxyにreadonlyなDBを追加する。
       ProxyRepository.checkout(name).readonly!
     end
 
@@ -30,7 +31,11 @@ module SwitchPoint
       end
     end
 
-    def writable!(name)
+    # config/initializers/switch_point.rbで
+    # SwitchPoint::writable!(:extra) みたいな書き方をするとデフォルトでwritableになる
+    # master-slave型のときにデフォルトでmasterを指定する場合に使う
+    def writable!(name) 
+      # ProxyにwritableなDBを追加する。
       ProxyRepository.checkout(name).writable!
     end
 
