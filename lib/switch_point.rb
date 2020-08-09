@@ -66,7 +66,9 @@ ActiveSupport.on_load(:active_record) do
   require 'switch_point/model'
   require 'switch_point/query_cache'
 
+  # SwitchPoint::ModelのメソッドをActiveRecord::Baseにinclude
   ActiveRecord::Base.send(:include, SwitchPoint::Model)
+  # class_evalで動的にクラス・メソッドを定義
   ActiveRecord::ConnectionAdapters::AbstractAdapter.class_eval do
     prepend SwitchPoint::Connection
   end
