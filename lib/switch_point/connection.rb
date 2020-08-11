@@ -11,6 +11,10 @@ module SwitchPoint
     # 破壊的メソッド（insert, update, delete）を上書き
     DESTRUCTIVE_METHODS.each do |method_name|
       define_method(method_name) do |*args, &block|
+        # Extraへの接続の場合、
+        # pool = skiyaki_development
+        # ActiveRecord::Base.connection_pool = thoth_development
+        # になる
         if pool.equal?(ActiveRecord::Base.connection_pool)
           Connection.handle_base_connection(self)
           super(*args, &block)
