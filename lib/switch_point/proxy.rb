@@ -20,10 +20,12 @@ module SwitchPoint
     end
 
     def define_model(name, mode)
+      # model_name = "ExtraReadonly"
       model_name = SwitchPoint.config.model_name(name, mode)
       if model_name
         model = Class.new(ActiveRecord::Base)
         Proxy.const_set(model_name, model)
+        # database_name = :extra_development
         model.establish_connection(SwitchPoint.config.database_name(name, mode))
         model
       elsif mode == :readonly
